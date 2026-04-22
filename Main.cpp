@@ -156,6 +156,38 @@ void showStory() {
         currentState = GAMEPLAY;
     }
 }
+/*void drawWrappedText(std::string text, int x, int y, int maxWidth, int fontSize, Color color) {
+    
+    std::string line = "";
+    int lineHeight = fontSize + 5;
+    int currentY = y;
+
+    std::string word = "";
+
+    for (int i = 0; i <= text.size(); i++) {
+
+        if (i < text.size() && text[i] != ' ') {
+            word += text[i];
+        } else {
+            std::string testLine = line + word + " ";
+            int width = MeasureText(testLine.c_str(), fontSize);
+
+            if (width > maxWidth && !line.empty()) {
+                DrawText(line.c_str(), x, currentY, fontSize, color);
+                currentY += lineHeight;
+                line = word + " ";
+            } else {
+                line = testLine;
+            }
+
+            word = "";
+        }
+    }
+
+    if (!line.empty()) {
+        DrawText(line.c_str(), x, currentY, fontSize, color);
+    }
+}*/
 void playGame() {
     DrawText("Investigation", 300, 50, 30, BLACK);
     // 🔹 Suspect Buttons
@@ -180,9 +212,14 @@ void playGame() {
         }
     }
     // 🔹 Dialogue Panel
-    DrawRectangle(100, 250, 600, 100, LIGHTGRAY);
-    DrawRectangleLines(100, 250, 600, 100, BLACK);
-    DrawText(TextSubtext(currentDialogue.c_str(), 0, 120), 110, 280, 18, BLACK);
+    DrawRectangle(100, 250, 600, 140, LIGHTGRAY);
+    DrawRectangleLines(100, 250, 600, 140, BLACK);
+    std::string text = currentDialogue;
+
+    DrawText(TextSubtext(text.c_str(), 0, 50), 110, 280, 18, BLACK);
+    DrawText(TextSubtext(text.c_str(), 50, 50), 110, 300, 18, BLACK);
+    DrawText(TextSubtext(text.c_str(), 100, 50), 110, 320, 18, BLACK);
+    DrawText(TextSubtext(text.c_str(), 150, 50), 110, 340, 18, BLACK);
     // 🔹 Accusation Button
     Button accuseBtn = { {300, 400, 200, 50}, "Make Accusation" };
     drawButton(accuseBtn);
