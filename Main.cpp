@@ -11,7 +11,8 @@ enum GameState {            //basically a way to give names to numbers, menu is 
     EXIT
 };
 struct Suspect {
-    std::string name;
+    std::string name;        // full name
+    std::string shortName;   // Alias used to display
     std::string statement;
     bool visited;
 };
@@ -41,19 +42,19 @@ bool isButtonClicked(Button btn);
 void initGameData() {
 
     suspects = {
-        {"Cat (Velvet)", 
+        {"Cat (Velvet)","Cat",
          "I heard a splash behind me, but I didn’t turn back. Curiosity is dangerous, you know.", 
          false},
-        {"Dog (Bruno)", 
+        {"Dog (Bruno)","Dog",
          "I was patrolling like always! I didn’t see anything… but I heard someone running near the reeds and then a splash. When I ran towards the pond, I discovered the body.", 
          false},
-        {"Rabbit (Luna)", 
+        {"Rabbit (Luna)", "Rabbit",
          "I saw shadows near the water… two shapes maybe… or one? I’m not sure… I got scared and ran to hide.", 
          false},
-        {"Owl (Professor Hoot)", 
+        {"Owl (Professor Hoot)", "Owl",
          "One voice will comfort you… another will confuse you… but only one is complete silence disguised as speech. I heard a splash and saw Bruno near the body.", 
          false},
-        {"Crocodile (Mr. Victor)", 
+        {"Crocodile (Mr. Victor)", "Crocodile",
          "Yes, I was in deeper water. I didn’t see anyone. When I surfaced, I saw the Mayor dead and Bruno standing there.", 
          false}
     };
@@ -161,9 +162,9 @@ void playGame() {
     for (int i = 0; i < suspects.size(); i++) {
         Button suspectBtn = {
             {100 + i * 120, 150, 100, 50},
-            suspects[i].name
+            suspects[i].shortName
         };
-        if (selectedSuspect == suspects[i].name) {
+        if (selectedSuspect == suspects[i].shortName) {
             DrawRectangleRec(suspectBtn.bounds, SKYBLUE);
             DrawRectangleLinesEx(suspectBtn.bounds, 2, BLACK);
         } else {
@@ -174,7 +175,7 @@ void playGame() {
             DrawRectangleLinesEx(suspectBtn.bounds, 3, GREEN);
         }
         if (isButtonClicked(suspectBtn)) {
-            selectedSuspect = suspects[i].name;
+            selectedSuspect = suspects[i].shortName;
             interrogateSuspect(i);
         }
     }
@@ -198,10 +199,10 @@ void showAccusationScreen() {
 
         Button suspectBtn = {
             {100 + i * 120, 200, 100, 50},
-            suspects[i].name
+            suspects[i].shortName
         };
 
-        if (playerAccusation == suspects[i].name) {
+        if (playerAccusation == suspects[i].shortName) {
             DrawRectangleRec(suspectBtn.bounds, SKYBLUE);
             DrawRectangleLinesEx(suspectBtn.bounds, 2, BLACK);
         } else {
@@ -209,7 +210,7 @@ void showAccusationScreen() {
 }
 
         if (isButtonClicked(suspectBtn)) {
-            playerAccusation = suspects[i].name;
+            playerAccusation = suspects[i].shortName;
         }
     }
 
@@ -232,22 +233,17 @@ void showAccusationScreen() {
 }
 }
 void showResult() {
-
     bool won = (playerAccusation.find("Owl") != std::string::npos);
-
     if (won) {
         DrawText("Case Closed: Justice Delivered!", 180, 200, 25, DARKGREEN);
     } else {
         DrawText("Wrong choice. The culprit escaped.", 180, 200, 25, RED);
     }
-
     // 🔹 Score display
     DrawText(TextFormat("Score: %d", score), 320, 260, 20, BLACK);
-
     // 🔹 Replay button
     Button replayBtn = { {300, 350, 200, 50}, "Replay" };
     drawButton(replayBtn);
-
     if (isButtonClicked(replayBtn)) {
         initGameData();
         currentState = MENU;
@@ -274,7 +270,6 @@ void interrogateSuspect(int index) {
     suspects[index].visited = true;
 }
 void checkResult() {
-
     if (playerAccusation.find("Owl") != std::string::npos) {
         updateScore(true);
     } else {
