@@ -152,18 +152,86 @@ void showStory() {
     }
 }
 void playGame() {
-    DrawText("GAMEPLAY SCREEN", 280, 250, 20, BLACK);
+    DrawText("Investigation", 300, 50, 30, BLACK);
+    // 🔹 Suspect Buttons
+    for (int i = 0; i < suspects.size(); i++) {
+        Button suspectBtn = {
+            {100 + i * 120, 150, 100, 50},
+            suspects[i].name
+        };
+        drawButton(suspectBtn);
+        if (isButtonClicked(suspectBtn)) {
+            interrogateSuspect(i);
+        }
+    }
+    // 🔹 Dialogue Panel
+    DrawRectangle(100, 250, 600, 100, LIGHTGRAY);
+    DrawRectangleLines(100, 250, 600, 100, BLACK);
+    DrawText(currentDialogue.c_str(), 110, 280, 18, BLACK);
+    // 🔹 Accusation Button
+    Button accuseBtn = { {300, 400, 200, 50}, "Make Accusation" };
+    drawButton(accuseBtn);
+    if (isButtonClicked(accuseBtn)) {
+        currentState = ACCUSATION;
+    }
 }
 void showAccusationScreen() {
-    DrawText("ACCUSATION SCREEN", 250, 250, 20, BLACK);
+
+    DrawText("Who is the culprit?", 260, 80, 30, BLACK);
+
+    // 🔹 Suspect selection buttons
+    for (int i = 0; i < suspects.size(); i++) {
+
+        Button suspectBtn = {
+            {100 + i * 120, 200, 100, 50},
+            suspects[i].name
+        };
+
+        drawButton(suspectBtn);
+
+        if (isButtonClicked(suspectBtn)) {
+            playerAccusation = suspects[i].name;
+        }
+    }
+
+    // 🔹 Show selected choice
+    DrawText("Selected:", 100, 300, 20, BLACK);
+    DrawText(playerAccusation.c_str(), 200, 300, 20, DARKBLUE);
+
+    // 🔹 Submit button
+    Button submitBtn = { {300, 400, 200, 50}, "Submit" };
+    drawButton(submitBtn);
+
+    if (isButtonClicked(submitBtn)) {
+        checkResult();
+        currentState = RESULT;
+    }
 }
 void showResult() {
-    DrawText("RESULT SCREEN", 300, 250, 20, BLACK);
+
+    bool won = (playerAccusation.find("Owl") != std::string::npos);
+
+    if (won) {
+        DrawText("Case Closed: Justice Delivered!", 180, 200, 25, DARKGREEN);
+    } else {
+        DrawText("Wrong choice. The culprit escaped.", 180, 200, 25, RED);
+    }
+
+    // 🔹 Score display
+    DrawText(TextFormat("Score: %d", score), 320, 260, 20, BLACK);
+
+    // 🔹 Replay button
+    Button replayBtn = { {300, 350, 200, 50}, "Replay" };
+    drawButton(replayBtn);
+
+    if (isButtonClicked(replayBtn)) {
+        initGameData();
+        currentState = MENU;
+    }
 }
 void drawButton(Button btn) {
     DrawRectangleRec(btn.bounds, LIGHTGRAY);
     DrawRectangleLinesEx(btn.bounds, 2, BLACK);
-
     int textWidth = MeasureText(btn.text.c_str(), 20);
     DrawText(
         btn.text.c_str(),
@@ -176,4 +244,21 @@ void drawButton(Button btn) {
 bool isButtonClicked(Button btn) {
     return CheckCollisionPointRec(GetMousePosition(), btn.bounds)
            && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+}
+void interrogateSuspect(int index) {
+    currentDialogue = suspects[index].statement;
+    suspects[index].visited = true;
+}
+void checkResult() {
+
+    if (playerAccusation.find("Owl") != std::string::npos) {
+        updateScore(true);
+    } else {
+        updateScore(false);
+    }
+}
+void updateScore(bool correct) {
+    if (correct) {
+        score += 10;
+    }
 }
