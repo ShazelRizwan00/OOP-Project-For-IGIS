@@ -203,9 +203,14 @@ void showAccusationScreen() {
     drawButton(submitBtn);
 
     if (isButtonClicked(submitBtn)) {
+
+    if (playerAccusation == "") {
+        DrawText("Please select a suspect first!", 220, 460, 20, RED);
+    } else {
         checkResult();
         currentState = RESULT;
     }
+}
 }
 void showResult() {
 
