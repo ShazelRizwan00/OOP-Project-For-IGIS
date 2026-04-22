@@ -25,6 +25,7 @@ std::string selectedSuspect;
 std::string playerAccusation;
 const std::string correctAnswer = "Owl";
 GameState currentState = MENU;
+std::string currentDialogue = "";
 void showMenu();
 void showInstructions();
 void showStory();
@@ -36,6 +37,8 @@ void updateScore(bool correct);
 void showResult();
 void initGameData();
 void initGameData() {
+void drawButton(Button btn);
+bool isButtonClicked(Button btn);
     suspects = {
         {"Cat (Velvet)", 
          "I heard a splash behind me, but I didn’t turn back. Curiosity is dangerous, you know.", 
@@ -113,10 +116,40 @@ void showMenu() {
     }
 }
 void showInstructions() {
-    DrawText("INSTRUCTIONS SCREEN", 250, 250, 20, BLACK);
+    DrawText("Instructions", 300, 80, 30, BLACK);
+    DrawText("You are Detective Duck.", 200, 150, 20, DARKGRAY);
+    DrawText("Investigate suspects and analyze their statements.", 200, 180, 20, DARKGRAY);
+    DrawText("You may question multiple suspects.", 200, 210, 20, DARKGRAY);
+    DrawText("When ready, make your final accusation.", 200, 240, 20, DARKGRAY);
+    DrawText("Choose wisely to solve the mystery.", 200, 270, 20, DARKGRAY);
+    Button nextBtn = { {300, 350, 200, 50}, "Continue" };
+    drawButton(nextBtn);
+    if (isButtonClicked(nextBtn)) {
+        currentState = STORY;
+    }
 }
 void showStory() {
-    DrawText("STORY SCREEN", 300, 250, 20, BLACK);
+
+    DrawText("The Silent Pond Case", 240, 60, 28, BLACK);
+
+    DrawText("It was a quiet summer night...", 120, 120, 20, DARKGRAY);
+    DrawText("The pond was unusually still. No ripples.", 120, 150, 20, DARKGRAY);
+    DrawText("Something felt wrong.", 120, 180, 20, DARKGRAY);
+
+    DrawText("Victim: Mayor Turtle", 120, 230, 20, BLACK);
+    DrawText("Time: 11:47 PM", 120, 260, 20, BLACK);
+    DrawText("Location: Silent Pond", 120, 290, 20, BLACK);
+
+    DrawText("Four animals were present...", 120, 340, 20, DARKGRAY);
+    DrawText("One of them is lying.", 120, 370, 20, RED);
+
+    Button nextBtn = { {300, 450, 200, 50}, "Start Investigation" };
+
+    drawButton(nextBtn);
+
+    if (isButtonClicked(nextBtn)) {
+        currentState = GAMEPLAY;
+    }
 }
 void playGame() {
     DrawText("GAMEPLAY SCREEN", 280, 250, 20, BLACK);
