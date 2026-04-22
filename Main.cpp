@@ -36,9 +36,10 @@ void checkResult();
 void updateScore(bool correct);
 void showResult();
 void initGameData();
-void initGameData() {
 void drawButton(Button btn);
 bool isButtonClicked(Button btn);
+void initGameData() {
+
     suspects = {
         {"Cat (Velvet)", 
          "I heard a splash behind me, but I didn’t turn back. Curiosity is dangerous, you know.", 
@@ -159,8 +160,14 @@ void playGame() {
             {100 + i * 120, 150, 100, 50},
             suspects[i].name
         };
-        drawButton(suspectBtn);
+        if (selectedSuspect == suspects[i].name) {
+            DrawRectangleRec(suspectBtn.bounds, SKYBLUE);
+            DrawRectangleLinesEx(suspectBtn.bounds, 2, BLACK);
+        } else {
+            drawButton(suspectBtn);
+        }
         if (isButtonClicked(suspectBtn)) {
+            selectedSuspect = suspects[i].name;
             interrogateSuspect(i);
         }
     }
@@ -187,7 +194,12 @@ void showAccusationScreen() {
             suspects[i].name
         };
 
-        drawButton(suspectBtn);
+        if (playerAccusation == suspects[i].name) {
+            DrawRectangleRec(suspectBtn.bounds, SKYBLUE);
+            DrawRectangleLinesEx(suspectBtn.bounds, 2, BLACK);
+        } else {
+            drawButton(suspectBtn);
+};
 
         if (isButtonClicked(suspectBtn)) {
             playerAccusation = suspects[i].name;
