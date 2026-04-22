@@ -20,6 +20,8 @@ struct Button {
     Rectangle bounds;
     std::string text;
 };
+Color forestGreen = {34, 139, 34, 255};
+Color mustardYellow = {254, 237, 207, 255};
 std::vector<Suspect> suspects;
 int score = 0;
 std::string selectedSuspect;
@@ -68,7 +70,12 @@ int main() {
     initGameData();   // IMPORTANT: initialize your data
     while (!WindowShouldClose()) {
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        if (currentState == MENU) ClearBackground(forestGreen);
+        else if (currentState == INSTRUCTIONS) ClearBackground(mustardYellow);
+        else if (currentState == STORY) ClearBackground(mustardYellow);
+        else if (currentState == GAMEPLAY) ClearBackground(mustardYellow);
+        else if (currentState == ACCUSATION) ClearBackground(LIGHTGRAY);
+        else if (currentState == RESULT) ClearBackground(SKYBLUE);
         switch (currentState) {
     case MENU:
         showMenu();
@@ -94,7 +101,7 @@ int main() {
 if (currentState == EXIT) {
     CloseWindow();
 }
-// 🔽 TEMP input testing (still inside loop, AFTER drawing is fine)
+//  input testing (still inside loop, AFTER drawing is fine)
         if (IsKeyPressed(KEY_ONE)) currentState = MENU;
         if (IsKeyPressed(KEY_TWO)) currentState = INSTRUCTIONS;
         if (IsKeyPressed(KEY_THREE)) currentState = STORY;
