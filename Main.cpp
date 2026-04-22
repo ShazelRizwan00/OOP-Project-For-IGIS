@@ -22,6 +22,7 @@ struct Button {
 };
 Color forestGreen = {34, 139, 34, 255};
 Color mustardYellow = {254, 237, 207, 255};
+Texture2D pondTexture;
 std::vector<Suspect> suspects;
 int score = 0;
 std::string selectedSuspect;
@@ -66,6 +67,7 @@ void initGameData() {
 }
 int main() {
     InitWindow(800, 600, "Duck Detective");
+    pondTexture = LoadTexture("pond.png"); 
     SetTargetFPS(60);
     initGameData();   // IMPORTANT: initialize your data
     while (!WindowShouldClose()) {
@@ -87,8 +89,9 @@ int main() {
         showStory();
         break;
     case GAMEPLAY:
-        playGame();
-        break;
+    DrawTexture(pondTexture, 0, 0, WHITE);
+    playGame();
+    break;
     case ACCUSATION:
         showAccusationScreen();
         break;
