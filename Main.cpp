@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>           //basically dynamic arrays
+#include "raylib.h"
 enum GameState {            //basically a way to give names to numbers, menu is 0 and so on
     MENU,
     INSTRUCTIONS,
@@ -13,6 +14,10 @@ struct Suspect {
     std::string name;
     std::string statement;
     bool visited;
+};
+struct Button {
+    Rectangle bounds;
+    std::string text;
 };
 std::vector<Suspect> suspects;
 int score = 0;
@@ -51,4 +56,91 @@ void initGameData() {
     score = 0;
     selectedSuspect = "";
     playerAccusation = "";
+}
+int main() {
+    InitWindow(800, 600, "Duck Detective");
+    SetTargetFPS(60);
+    initGameData();   // IMPORTANT: initialize your data
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+        switch (currentState) {
+    case MENU:
+        showMenu();
+        break;
+    case INSTRUCTIONS:
+        showInstructions();
+        break;
+    case STORY:
+        showStory();
+        break;
+    case GAMEPLAY:
+        playGame();
+        break;
+    case ACCUSATION:
+        showAccusationScreen();
+        break;
+    case RESULT:
+        showResult();
+        break;
+    case EXIT:
+        break;
+}
+// 🔽 TEMP input testing (still inside loop, AFTER drawing is fine)
+        if (IsKeyPressed(KEY_ONE)) currentState = MENU;
+        if (IsKeyPressed(KEY_TWO)) currentState = INSTRUCTIONS;
+        if (IsKeyPressed(KEY_THREE)) currentState = STORY;
+        if (IsKeyPressed(KEY_FOUR)) currentState = GAMEPLAY;
+        if (IsKeyPressed(KEY_FIVE)) currentState = ACCUSATION;
+        if (IsKeyPressed(KEY_SIX)) currentState = RESULT;
+
+        EndDrawing();
+    }
+    CloseWindow();
+    return 0;
+}
+void showMenu() {
+    DrawText("Duck Detective", 280, 150, 30, BLACK);
+    Button startBtn = { {300, 250, 200, 50}, "Start" };
+    Button exitBtn  = { {300, 320, 200, 50}, "Exit" };
+    drawButton(startBtn);
+    drawButton(exitBtn);
+    if (isButtonClicked(startBtn)) {
+        currentState = INSTRUCTIONS;
+    }
+    if (isButtonClicked(exitBtn)) {
+        currentState = EXIT;
+    }
+}
+void showInstructions() {
+    DrawText("INSTRUCTIONS SCREEN", 250, 250, 20, BLACK);
+}
+void showStory() {
+    DrawText("STORY SCREEN", 300, 250, 20, BLACK);
+}
+void playGame() {
+    DrawText("GAMEPLAY SCREEN", 280, 250, 20, BLACK);
+}
+void showAccusationScreen() {
+    DrawText("ACCUSATION SCREEN", 250, 250, 20, BLACK);
+}
+void showResult() {
+    DrawText("RESULT SCREEN", 300, 250, 20, BLACK);
+}
+void drawButton(Button btn) {
+    DrawRectangleRec(btn.bounds, LIGHTGRAY);
+    DrawRectangleLinesEx(btn.bounds, 2, BLACK);
+
+    int textWidth = MeasureText(btn.text.c_str(), 20);
+    DrawText(
+        btn.text.c_str(),
+        btn.bounds.x + (btn.bounds.width - textWidth) / 2,
+        btn.bounds.y + 10,
+        20,
+        BLACK
+    );
+}
+bool isButtonClicked(Button btn) {
+    return CheckCollisionPointRec(GetMousePosition(), btn.bounds)
+           && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 }
