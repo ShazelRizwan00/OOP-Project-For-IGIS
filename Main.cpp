@@ -90,6 +90,9 @@ int main() {
     case EXIT:
         break;
 }
+if (currentState == EXIT) {
+    CloseWindow();
+}
 // 🔽 TEMP input testing (still inside loop, AFTER drawing is fine)
         if (IsKeyPressed(KEY_ONE)) currentState = MENU;
         if (IsKeyPressed(KEY_TWO)) currentState = INSTRUCTIONS;
@@ -166,6 +169,10 @@ void playGame() {
         } else {
             drawButton(suspectBtn);
         }
+        // 🔹 NEW: visited indicator (green border)
+        if (suspects[i].visited) {
+            DrawRectangleLinesEx(suspectBtn.bounds, 3, GREEN);
+        }
         if (isButtonClicked(suspectBtn)) {
             selectedSuspect = suspects[i].name;
             interrogateSuspect(i);
@@ -174,7 +181,7 @@ void playGame() {
     // 🔹 Dialogue Panel
     DrawRectangle(100, 250, 600, 100, LIGHTGRAY);
     DrawRectangleLines(100, 250, 600, 100, BLACK);
-    DrawText(currentDialogue.c_str(), 110, 280, 18, BLACK);
+    DrawText(TextSubtext(currentDialogue.c_str(), 0, 120), 110, 280, 18, BLACK);
     // 🔹 Accusation Button
     Button accuseBtn = { {300, 400, 200, 50}, "Make Accusation" };
     drawButton(accuseBtn);
@@ -199,7 +206,7 @@ void showAccusationScreen() {
             DrawRectangleLinesEx(suspectBtn.bounds, 2, BLACK);
         } else {
             drawButton(suspectBtn);
-};
+}
 
         if (isButtonClicked(suspectBtn)) {
             playerAccusation = suspects[i].name;
