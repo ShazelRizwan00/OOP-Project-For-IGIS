@@ -1,7 +1,7 @@
 #include <string>
-#include <vector>           //basically dynamic arrays
+#include <vector>           //dynamic arrays
 #include "raylib.h"
-enum GameState {            //basically a way to give names to numbers, menu is 0 and so on
+enum GameState {           //Used to switch between game states
     MENU,
     INSTRUCTIONS,
     STORY,
@@ -10,19 +10,23 @@ enum GameState {            //basically a way to give names to numbers, menu is 
     RESULT,
     EXIT
 };
+//Base template for characters
 struct Suspect {
-    std::string name;        // full name
-    std::string shortName;   // Alias used to display
+    std::string name;        
+    std::string shortName;   
     std::string statement;
     bool visited;
 };
+//UI 
 struct Button {
     Rectangle bounds;
     std::string text;
 };
+//Colors and Textures
 Color forestGreen = {34, 139, 34, 255};
 Color mustardYellow = {254, 237, 207, 255};
 Texture2D pondTexture;
+//Global Variables
 std::vector<Suspect> suspects;
 int score = 0;
 std::string selectedSuspect;
@@ -30,6 +34,7 @@ std::string playerAccusation;
 const std::string correctAnswer = "Owl";
 GameState currentState = MENU;
 std::string currentDialogue = "";
+//Forward Function Declaration
 void showMenu();
 void showInstructions();
 void showStory();
@@ -43,7 +48,6 @@ void initGameData();
 void drawButton(Button btn);
 bool isButtonClicked(Button btn);
 void initGameData() {
-
     suspects = {
         {"Cat (Velvet)","Cat",
          "I heard a splash behind me, but I didn’t turn back. Curiosity is dangerous, you know.", 
@@ -66,12 +70,13 @@ void initGameData() {
     playerAccusation = "";
 }
 int main() {
+    //Raylib functions to make a game window
     InitWindow(800, 600, "Duck Detective");
     pondTexture = LoadTexture("pond.png"); 
     SetTargetFPS(60);
-    initGameData();   // IMPORTANT: initialize your data
+    initGameData();   //Function call
     while (!WindowShouldClose()) {
-        BeginDrawing();
+        BeginDrawing(); //Background change
         if (currentState == MENU) ClearBackground(forestGreen);
         else if (currentState == INSTRUCTIONS) ClearBackground(mustardYellow);
         else if (currentState == STORY) ClearBackground(mustardYellow);
@@ -104,14 +109,13 @@ int main() {
 if (currentState == EXIT) {
     CloseWindow();
 }
-//  input testing (still inside loop, AFTER drawing is fine)
+// Developer Inputs (Use In case buttons don't work)
         if (IsKeyPressed(KEY_ONE)) currentState = MENU;
         if (IsKeyPressed(KEY_TWO)) currentState = INSTRUCTIONS;
         if (IsKeyPressed(KEY_THREE)) currentState = STORY;
         if (IsKeyPressed(KEY_FOUR)) currentState = GAMEPLAY;
         if (IsKeyPressed(KEY_FIVE)) currentState = ACCUSATION;
         if (IsKeyPressed(KEY_SIX)) currentState = RESULT;
-
         EndDrawing();
     }
     CloseWindow();
@@ -166,6 +170,7 @@ void showStory() {
         currentState = GAMEPLAY;
     }
 }
+//Function i made to wrap text but failed spectaculary :(
 /*void drawWrappedText(std::string text, int x, int y, int maxWidth, int fontSize, Color color) {
     
     std::string line = "";
@@ -212,7 +217,7 @@ void playGame() {
         } else {
             drawButton(suspectBtn);
         }
-        // 🔹 NEW: visited indicator (green border)
+        // visited indicator (green border)
         if (suspects[i].visited) {
             DrawRectangleLinesEx(suspectBtn.bounds, 3, GREEN);
         }
@@ -221,7 +226,7 @@ void playGame() {
             interrogateSuspect(i);
         }
     }
-    // 🔹 Dialogue Panel
+    //  Dialogue Panel
     DrawRectangle(100, 250, 600, 140, LIGHTGRAY);
     DrawRectangleLines(100, 250, 600, 140, BLACK);
     std::string text = currentDialogue;
@@ -261,11 +266,10 @@ void showAccusationScreen() {
         }
     }
 
-    // 🔹 Show selected choice
+    //Selected Choice
     DrawText("Selected:", 100, 300, 20, BLACK);
     DrawText(playerAccusation.c_str(), 200, 300, 20, DARKBLUE);
 
-    // 🔹 Submit button
     Button submitBtn = { {300, 400, 200, 50}, "Submit" };
     drawButton(submitBtn);
 
@@ -286,9 +290,9 @@ void showResult() {
     } else {
         DrawText("Wrong choice. The culprit escaped.", 180, 200, 25, RED);
     }
-    // 🔹 Score display
+    // Score display
     DrawText(TextFormat("Score: %d", score), 320, 260, 20, BLACK);
-    // 🔹 Replay button
+    //Replay button
     Button replayBtn = { {300, 350, 200, 50}, "Replay" };
     drawButton(replayBtn);
     if (isButtonClicked(replayBtn)) {
