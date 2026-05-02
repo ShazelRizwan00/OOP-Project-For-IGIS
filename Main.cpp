@@ -72,6 +72,9 @@ void initGameData() {
 int main() {
     //Raylib functions to make a game window
     InitWindow(800, 600, "Duck Detective");
+    InitAudioDevice(); 
+    Music bgMusic = LoadMusicStream("music.wav");  // or .wav
+    PlayMusicStream(bgMusic);
     pondTexture = LoadTexture("pond.png"); 
     SetTargetFPS(60);
     initGameData();   //Function call
@@ -116,8 +119,11 @@ if (currentState == EXIT) {
         if (IsKeyPressed(KEY_FOUR)) currentState = GAMEPLAY;
         if (IsKeyPressed(KEY_FIVE)) currentState = ACCUSATION;
         if (IsKeyPressed(KEY_SIX)) currentState = RESULT;
+        UpdateMusicStream(bgMusic);
         EndDrawing();
     }
+    UnloadMusicStream(bgMusic);
+    CloseAudioDevice();
     CloseWindow();
     return 0;
 }
@@ -170,39 +176,6 @@ void showStory() {
         currentState = GAMEPLAY;
     }
 }
-//Function i made to wrap text but failed spectaculary :(
-/*void drawWrappedText(std::string text, int x, int y, int maxWidth, int fontSize, Color color) {
-    
-    std::string line = "";
-    int lineHeight = fontSize + 5;
-    int currentY = y;
-
-    std::string word = "";
-
-    for (int i = 0; i <= text.size(); i++) {
-
-        if (i < text.size() && text[i] != ' ') {
-            word += text[i];
-        } else {
-            std::string testLine = line + word + " ";
-            int width = MeasureText(testLine.c_str(), fontSize);
-
-            if (width > maxWidth && !line.empty()) {
-                DrawText(line.c_str(), x, currentY, fontSize, color);
-                currentY += lineHeight;
-                line = word + " ";
-            } else {
-                line = testLine;
-            }
-
-            word = "";
-        }
-    }
-
-    if (!line.empty()) {
-        DrawText(line.c_str(), x, currentY, fontSize, color);
-    }
-}*/
 void playGame() {
     DrawText("Investigation", 300, 50, 30, BLACK);
     // 🔹 Suspect Buttons
